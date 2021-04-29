@@ -348,9 +348,15 @@ def build_idr_output_line_with_bed6(
             rv.append( "%i" % max(x.stop for x in m_pk.pks[key]))
             rv.append( "%.5f" % signal )
             if output_file_type == 'narrowPeak':
-                rv.append( "%i" % int(
-                    mean(x.summit-x.start for x in m_pk.pks[key])
-                ))
+                summits = [x.summit for x in m_pk.pks[key]]
+                if None in summits:
+                    rv.append("-1")
+                else:
+                    starts = [x.start for x in m_pk.pks[key]]
+                    diffs = []
+                    for i in range(len(summits)):
+                        diffs.append(summit[i] - start[i])
+                    rv.append(str(mean(diffs)))
                                        
             
     return "\t".join(rv)
